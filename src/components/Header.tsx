@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { GraduationCap, Menu, User } from "lucide-react";
 
-const Header = () => {
+interface HeaderProps {
+  onGetStarted?: () => void;
+}
+
+const Header = ({ onGetStarted }: HeaderProps) => {
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -26,7 +30,7 @@ const Header = () => {
             <User className="h-4 w-4" />
             Sign In
           </Button>
-          <Button variant="hero" size="sm">
+          <Button variant="hero" size="sm" onClick={onGetStarted}>
             Get Started
           </Button>
           <Button variant="ghost" size="icon" className="md:hidden">

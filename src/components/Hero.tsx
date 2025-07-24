@@ -3,7 +3,11 @@ import { Card } from "@/components/ui/card";
 import { Brain, Users, Trophy, Zap } from "lucide-react";
 import heroImage from "@/assets/hero-education.jpg";
 
-const Hero = () => {
+interface HeroProps {
+  onGetStarted?: () => void;
+}
+
+const Hero = ({ onGetStarted }: HeroProps) => {
   return (
     <section className="relative py-20 px-4 overflow-hidden">
       {/* Background gradient */}
@@ -30,7 +34,7 @@ const Hero = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="lg" className="group">
+              <Button variant="hero" size="lg" className="group" onClick={onGetStarted}>
                 Start Learning Now
                 <Zap className="h-4 w-4 group-hover:rotate-12 transition-transform" />
               </Button>
