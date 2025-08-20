@@ -7,8 +7,10 @@ import Auth from "@/components/Auth";
 import Dashboard from "@/components/Dashboard";
 import Quiz from "@/components/Quiz";
 import Results from "@/components/Results";
+import QuizGenerator from "@/components/QuizGenerator";
+import FacultyDashboard from "@/components/FacultyDashboard";
 
-type AppState = 'landing' | 'auth' | 'dashboard' | 'quiz' | 'results';
+type AppState = 'landing' | 'auth' | 'dashboard' | 'faculty-dashboard' | 'quiz-generator' | 'quiz' | 'results';
 
 interface User {
   id: number;
@@ -22,29 +24,50 @@ interface User {
 const Index = () => {
   const [currentView, setCurrentView] = useState<AppState>('landing');
   const [user, setUser] = useState<User | null>(null);
+  const [quizScore, setQuizScore] = useState<number>(0);
   const [quizResults, setQuizResults] = useState<any>(null);
+  const [currentQuestions, setCurrentQuestions] = useState<any[]>([]);
+  const [currentSubject, setCurrentSubject] = useState<string>("Mixed Topics");
 
   const handleLogin = (userType: 'student' | 'faculty', userData: User) => {
     setUser(userData);
-    setCurrentView('dashboard');
+    if (userType === 'faculty') {
+      setCurrentView('faculty-dashboard');
+    } else {
+      setCurrentView('dashboard');
+    }
   };
 
   const handleStartQuiz = () => {
     setCurrentView('quiz');
   };
 
+  const handleCreateQuiz = () => {
+    setCurrentView('quiz-generator');
+  };
+
+  const handleQuizGenerated = (questions: any[]) => {
+    setCurrentQuestions(questions);
+    setCurrentSubject(questions[0]?.subject || "Generated Quiz");
+    setCurrentView('quiz');
+  };
+
   const handleQuizComplete = (score: number, results: any) => {
-    setQuizResults({ score, results });
+    setQuizScore(score);
+    setQuizResults(results);
     setCurrentView('results');
   };
 
   const handleRetakeQuiz = () => {
-    setQuizResults(null);
     setCurrentView('quiz');
   };
 
   const handleBackToDashboard = () => {
-    setCurrentView('dashboard');
+    if (user?.userType === 'faculty') {
+      setCurrentView('faculty-dashboard');
+    } else {
+      setCurrentView('dashboard');
+    }
   };
 
   const handleGetStarted = () => {
@@ -80,27 +103,51 @@ const Index = () => {
       <Dashboard 
         user={user} 
         onStartQuiz={handleStartQuiz}
-        onCreateQuiz={user.userType === 'faculty' ? () => console.log('Create quiz') : undefined}
+        onCreateQuiz={handleCreateQuiz}
       />
     );
   }
 
-  // Quiz Taking
-  if (currentView === 'quiz') {
+  // Faculty Dashboard
+  if (currentView === 'faculty-dashboard' && user) {
     return (
-      <Quiz 
-        onComplete={handleQuizComplete}
+      <FacultyDashboard 
+        user={user} 
+        onCreateQuiz={handleCreateQuiz}
         onBack={handleBackToDashboard}
       />
     );
   }
 
+  // Quiz Generator
+  if (currentView === 'quiz-generator') {
+    return (
+      <QuizGenerator 
+        onQuizGenerated={handleQuizGenerated}
+        onBack={handleBackToDashboard}
+      />
+    );
+  }
+
+  // Quiz Taking
+    if (currentView === 'quiz') {
+      return (
+        <Quiz 
+          questions={currentQuestions.length > 0 ? currentQuestions : undefined}
+          subject={currentSubject}
+          onComplete={handleQuizComplete}
+          onBack={handleBackToDashboard}
+        />
+      );
+    }
+
   // Results
-  if (currentView === 'results' && quizResults) {
+  if (currentView === 'results') {
     return (
       <Results 
-        score={quizResults.score}
-        results={quizResults.results}
+        score={quizScore}
+        results={quizResults}
+        subject={currentSubject}
         onRetakeQuiz={handleRetakeQuiz}
         onBackToDashboard={handleBackToDashboard}
       />

@@ -27,17 +27,19 @@ interface Question {
 }
 
 interface QuizProps {
+  questions?: Question[];
+  subject?: string;
   onComplete: (score: number, results: any) => void;
   onBack: () => void;
 }
 
-const Quiz = ({ onComplete, onBack }: QuizProps) => {
+const Quiz = ({ questions: propQuestions, subject = "Mixed Topics", onComplete, onBack }: QuizProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>([]);
   const [timeLeft, setTimeLeft] = useState(900); // 15 minutes
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const questions: Question[] = [
+  const defaultQuestions: Question[] = [
     {
       id: 1,
       question: "What is the primary function of mitochondria in a cell?",
@@ -104,6 +106,8 @@ const Quiz = ({ onComplete, onBack }: QuizProps) => {
       difficulty: 'medium'
     }
   ];
+
+  const questions = propQuestions || defaultQuestions;
 
   useEffect(() => {
     setSelectedAnswers(new Array(questions.length).fill(null));
@@ -180,7 +184,7 @@ const Quiz = ({ onComplete, onBack }: QuizProps) => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl font-bold text-foreground">Science Quiz - Mixed Topics</h1>
+              <h1 className="text-xl font-bold text-foreground">{subject} Quiz</h1>
               <p className="text-sm text-muted-foreground">Question {currentQuestion + 1} of {questions.length}</p>
             </div>
             <div className="flex items-center gap-4">

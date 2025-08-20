@@ -32,11 +32,12 @@ interface QuizResult {
 interface ResultsProps {
   score: number;
   results: QuizResult[];
+  subject?: string;
   onRetakeQuiz: () => void;
   onBackToDashboard: () => void;
 }
 
-const Results = ({ score, results, onRetakeQuiz, onBackToDashboard }: ResultsProps) => {
+const Results = ({ score, results, subject = "Mixed Topics", onRetakeQuiz, onBackToDashboard }: ResultsProps) => {
   const [showDetails, setShowDetails] = useState(false);
   
   const correctAnswers = results.filter(r => r.isCorrect).length;
@@ -73,7 +74,7 @@ const Results = ({ score, results, onRetakeQuiz, onBackToDashboard }: ResultsPro
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl font-bold text-foreground">Quiz Results</h1>
-              <p className="text-sm text-muted-foreground">Science Quiz - Mixed Topics</p>
+              <p className="text-sm text-muted-foreground">{subject} Quiz</p>
             </div>
             <Button variant="outline" onClick={onBackToDashboard}>
               <ArrowLeft className="h-4 w-4" />
@@ -164,38 +165,39 @@ const Results = ({ score, results, onRetakeQuiz, onBackToDashboard }: ResultsPro
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Award className="h-5 w-5" />
-                  Achievement Unlocked
+                  <TrendingUp className="h-5 w-5" />
+                  Performance Summary
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-success/10 rounded-lg">
-                    <div className="w-10 h-10 bg-success rounded-full flex items-center justify-center">
+                  <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg">
+                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
                       <CheckCircle className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-medium text-success">Quiz Completed</h4>
-                      <p className="text-sm text-muted-foreground">Finished a full quiz session</p>
+                      <h4 className="font-medium text-primary">Quiz Completed</h4>
+                      <p className="text-sm text-muted-foreground">Successfully finished {subject} quiz</p>
                     </div>
                   </div>
                   
                   {score >= 80 && (
-                    <div className="flex items-center gap-3 p-3 bg-warning/10 rounded-lg">
-                      <div className="w-10 h-10 bg-warning rounded-full flex items-center justify-center">
+                    <div className="flex items-center gap-3 p-3 bg-success/10 rounded-lg">
+                      <div className="w-10 h-10 bg-success rounded-full flex items-center justify-center">
                         <Star className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-warning">High Achiever</h4>
+                        <h4 className="font-medium text-success">Excellent Performance</h4>
                         <p className="text-sm text-muted-foreground">Scored 80% or higher</p>
                       </div>
                     </div>
                   )}
 
-                  <div className="text-center pt-4">
-                    <p className="text-sm text-muted-foreground">
-                      +{Math.round(score * 2)} XP earned
+                  <div className="text-center pt-4 border-t">
+                    <p className="text-sm font-medium text-foreground">
+                      Points Earned: {Math.round(score * 2)}
                     </p>
+                    <p className="text-xs text-muted-foreground">Based on quiz performance</p>
                   </div>
                 </div>
               </CardContent>
@@ -212,11 +214,66 @@ const Results = ({ score, results, onRetakeQuiz, onBackToDashboard }: ResultsPro
               <BookOpen className="h-4 w-4" />
               {showDetails ? 'Hide' : 'Show'} Detailed Review
             </Button>
-            <Button variant="ghost">
+            <Button 
+              variant="ghost" 
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    title: `Quiz Results - ${subject}`,
+                    text: `I scored ${score}% on the ${subject} quiz! ${correctAnswers}/${totalQuestions} correct answers.`,
+                    url: window.location.href
+                  });
+                } else {
+                  navigator.clipboard.writeText(`I scored ${score}% on the ${subject} quiz! ${correctAnswers}/${totalQuestions} correct answers.`);
+                }
+              }}
+            >
               <Share2 className="h-4 w-4" />
               Share Results
             </Button>
-            <Button variant="ghost">
+            <Button 
+              variant="ghost"
+              onClick={() => {
+                const printWindow = window.open('', '_blank');
+                if (printWindow) {
+                  printWindow.document.write(`
+                    <html>
+                      <head>
+                        <title>Quiz Results - ${subject}</title>
+                        <style>
+                          body { font-family: Arial, sans-serif; margin: 20px; }
+                          .header { text-align: center; margin-bottom: 30px; }
+                          .score { font-size: 24px; font-weight: bold; color: #2563eb; }
+                          .question { margin: 20px 0; padding: 15px; border: 1px solid #e5e7eb; border-radius: 8px; }
+                          .correct { background-color: #f0fdf4; }
+                          .incorrect { background-color: #fef2f2; }
+                          .question-title { font-weight: bold; margin-bottom: 10px; }
+                          .answer { margin: 5px 0; }
+                          .explanation { margin-top: 10px; font-style: italic; color: #6b7280; }
+                        </style>
+                      </head>
+                      <body>
+                        <div class="header">
+                          <h1>${subject} Quiz Results</h1>
+                          <div class="score">Score: ${score}%</div>
+                          <p>Correct Answers: ${correctAnswers}/${totalQuestions}</p>
+                        </div>
+                        ${results.map((result, index) => `
+                          <div class="question ${result.isCorrect ? 'correct' : 'incorrect'}">
+                            <div class="question-title">Question ${index + 1}: ${result.question}</div>
+                            <div class="answer">Your Answer: ${result.userAnswer}</div>
+                            ${!result.isCorrect ? `<div class="answer">Correct Answer: ${result.correctAnswer}</div>` : ''}
+                            <div class="explanation">Explanation: ${result.explanation}</div>
+                          </div>
+                        `).join('')}
+                      </body>
+                    </html>
+                  `);
+                  printWindow.document.close();
+                  printWindow.print();
+                }
+              }}
+            >
               <Download className="h-4 w-4" />
               Export PDF
             </Button>

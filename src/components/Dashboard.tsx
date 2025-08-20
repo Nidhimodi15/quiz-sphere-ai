@@ -15,7 +15,6 @@ import {
   CheckCircle,
   Calendar,
   BarChart3,
-  Users,
   Plus
 } from "lucide-react";
 
@@ -53,13 +52,6 @@ const Dashboard = ({ user, onStartQuiz, onCreateQuiz }: DashboardProps) => {
     { id: 4, title: "Programming Basics", subject: "Computer Science", score: null, date: "2024-01-16", status: "pending" }
   ];
 
-  const leaderboard = [
-    { rank: 1, name: "Alex Johnson", score: 2450, avatar: "https://api.dicebear.com/7.x/initials/svg?seed=AJ" },
-    { rank: 2, name: "Sarah Wilson", score: 2380, avatar: "https://api.dicebear.com/7.x/initials/svg?seed=SW" },
-    { rank: 3, name: "Mike Chen", score: 2310, avatar: "https://api.dicebear.com/7.x/initials/svg?seed=MC" },
-    { rank: 4, name: user.name, score: 2150, avatar: user.avatar },
-    { rank: 5, name: "Emma Davis", score: 2100, avatar: "https://api.dicebear.com/7.x/initials/svg?seed=ED" }
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -235,58 +227,9 @@ const Dashboard = ({ user, onStartQuiz, onCreateQuiz }: DashboardProps) => {
               </Card>
             </div>
 
-            {/* Leaderboard */}
+            {/* Quick Actions */}
             <div>
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Trophy className="h-5 w-5" />
-                    Global Leaderboard
-                  </CardTitle>
-                  <CardDescription>
-                    See how you rank against other learners
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {leaderboard.map((user, index) => (
-                      <div 
-                        key={index} 
-                        className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
-                          user.name === user.name ? 'bg-primary/10 border border-primary/20' : 'hover:bg-muted/50'
-                        }`}
-                      >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                          user.rank === 1 ? 'bg-warning text-warning-foreground' :
-                          user.rank === 2 ? 'bg-muted text-muted-foreground' :
-                          user.rank === 3 ? 'bg-destructive/20 text-destructive' :
-                          'bg-muted text-muted-foreground'
-                        }`}>
-                          {user.rank}
-                        </div>
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={user.avatar} alt={user.name} />
-                          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <h4 className="font-medium text-foreground text-sm">{user.name}</h4>
-                          <p className="text-xs text-muted-foreground">{user.score} points</p>
-                        </div>
-                        {user.rank <= 3 && (
-                          <Award className={`h-4 w-4 ${
-                            user.rank === 1 ? 'text-warning' : 
-                            user.rank === 2 ? 'text-muted-foreground' : 
-                            'text-destructive'
-                          }`} />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Quick Actions */}
-              <Card className="mt-6">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BarChart3 className="h-5 w-5" />
@@ -304,14 +247,6 @@ const Dashboard = ({ user, onStartQuiz, onCreateQuiz }: DashboardProps) => {
                       Create New Quiz
                     </Button>
                   )}
-                  <Button variant="ghost" className="w-full justify-start">
-                    <Users className="h-4 w-4" />
-                    Join Study Group
-                  </Button>
-                  <Button variant="ghost" className="w-full justify-start">
-                    <Trophy className="h-4 w-4" />
-                    View Achievements
-                  </Button>
                 </CardContent>
               </Card>
             </div>
