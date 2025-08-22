@@ -341,10 +341,6 @@ const Quiz = ({ questions: propQuestions, subject = "Mixed Topics", onComplete, 
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Total Questions</span>
-                    <span className="font-medium">{questions.length}</span>
-                  </div>
-                  <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Time Limit</span>
                     <span className="font-medium">15 minutes</span>
                   </div>

@@ -241,10 +241,10 @@ const Dashboard = ({ user, onStartQuiz, onCreateQuiz }: DashboardProps) => {
                     <PlayCircle className="h-4 w-4" />
                     Take Random Quiz
                   </Button>
-                  {user.userType === 'faculty' && onCreateQuiz && (
+                  {onCreateQuiz && (
                     <Button variant="outline" className="w-full justify-start" onClick={onCreateQuiz}>
                       <Plus className="h-4 w-4" />
-                      Create New Quiz
+                      {user.userType === 'faculty' ? 'Create New Quiz' : 'Generate Quiz'}
                     </Button>
                   )}
                 </CardContent>
