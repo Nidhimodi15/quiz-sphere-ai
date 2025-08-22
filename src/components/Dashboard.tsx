@@ -87,65 +87,123 @@ const Dashboard = ({ user, onStartQuiz, onCreateQuiz }: DashboardProps) => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid gap-8">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="hover:shadow-card transition-all duration-300">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {user.userType === 'student' ? 'Quizzes Completed' : 'Quizzes Created'}
-                </CardTitle>
-                <BookOpen className="h-4 w-4 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">
-                  {user.userType === 'student' ? user.stats.quizzesCompleted : user.stats.quizzesCreated}
+          {/* Enhanced Stats Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {/* Primary Stat - Large Feature Card */}
+            <div className="md:col-span-2 xl:col-span-2">
+              <Card className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background border-primary/20 hover:shadow-elegant transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+                <CardContent className="p-8 relative z-10">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-3 rounded-xl bg-primary/20 backdrop-blur-sm">
+                          <BookOpen className="h-6 w-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-medium text-muted-foreground">
+                            {user.userType === 'student' ? 'Learning Progress' : 'Teaching Impact'}
+                          </h3>
+                          <p className="text-3xl font-bold text-foreground">
+                            {user.userType === 'student' ? user.stats.quizzesCompleted : user.stats.quizzesCreated}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <TrendingUp className="h-4 w-4 text-success" />
+                          <span className="text-sm font-medium text-success">+12% improvement</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {user.userType === 'student' ? 'Quizzes completed this month' : 'New quizzes created'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Performance Score Card */}
+            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-1">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2 rounded-lg bg-success/10 group-hover:bg-success/20 transition-colors">
+                    <Target className="h-5 w-5 text-success" />
+                  </div>
+                  <Badge variant="secondary" className="text-xs">Performance</Badge>
                 </div>
-                <p className="text-xs text-success">+12% from last month</p>
+                <div className="space-y-2">
+                  <p className="text-2xl font-bold text-foreground">
+                    {user.userType === 'student' ? user.stats.averageScore : user.stats.averageStudentScore}%
+                  </p>
+                  <p className="text-sm font-medium text-muted-foreground">Average Score</p>
+                  <div className="w-full bg-muted rounded-full h-1.5">
+                    <div 
+                      className="bg-success h-1.5 rounded-full transition-all duration-500" 
+                      style={{
+                        width: `${user.userType === 'student' ? user.stats.averageScore : user.stats.averageStudentScore}%`
+                      }}
+                    />
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-card transition-all duration-300">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Average Score
-                </CardTitle>
-                <Target className="h-4 w-4 text-success" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">
-                  {user.userType === 'student' ? user.stats.averageScore : user.stats.averageStudentScore}%
+            {/* Activity Metric Card */}
+            <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-1">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-2 rounded-lg bg-warning/10 group-hover:bg-warning/20 transition-colors">
+                    <Award className="h-5 w-5 text-warning" />
+                  </div>
+                  <Badge variant="outline" className="text-xs border-warning/20">Activity</Badge>
                 </div>
-                <p className="text-xs text-success">+5% improvement</p>
+                <div className="space-y-2">
+                  <p className="text-2xl font-bold text-foreground">
+                    {user.userType === 'student' ? `${user.stats.streak}` : user.stats.studentsTeaching}
+                  </p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {user.userType === 'student' ? 'Day Streak' : 'Students Teaching'}
+                  </p>
+                  <div className="flex items-center gap-1 text-xs text-warning">
+                    <div className="w-1 h-1 rounded-full bg-warning animate-pulse" />
+                    <span>Keep it up!</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-card transition-all duration-300">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {user.userType === 'student' ? 'Current Streak' : 'Students Teaching'}
-                </CardTitle>
-                <TrendingUp className="h-4 w-4 text-warning" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">
-                  {user.userType === 'student' ? `${user.stats.streak} days` : user.stats.studentsTeaching}
-                </div>
-                <p className="text-xs text-warning">Keep it up!</p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-card transition-all duration-300">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Total Points
-                </CardTitle>
-                <Trophy className="h-4 w-4 text-accent" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">2,150</div>
-                <p className="text-xs text-accent">Rank #4 globally</p>
-              </CardContent>
-            </Card>
+            {/* Achievement Stats - Spans full width on mobile */}
+            <div className="md:col-span-2 xl:col-span-4">
+              <Card className="bg-gradient-to-r from-accent/10 via-background to-primary/10 border-accent/20">
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                    <div className="space-y-2">
+                      <div className="inline-flex p-3 rounded-full bg-primary/10">
+                        <Trophy className="h-5 w-5 text-primary" />
+                      </div>
+                      <p className="text-2xl font-bold text-foreground">2,150</p>
+                      <p className="text-sm text-muted-foreground">Total Points</p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="inline-flex p-3 rounded-full bg-success/10">
+                        <Award className="h-5 w-5 text-success" />
+                      </div>
+                      <p className="text-2xl font-bold text-foreground">#4</p>
+                      <p className="text-sm text-muted-foreground">Global Rank</p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="inline-flex p-3 rounded-full bg-warning/10">
+                        <Clock className="h-5 w-5 text-warning" />
+                      </div>
+                      <p className="text-2xl font-bold text-foreground">45h</p>
+                      <p className="text-sm text-muted-foreground">Study Time</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
