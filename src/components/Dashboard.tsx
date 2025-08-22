@@ -181,7 +181,6 @@ const Dashboard = ({ user, onStartQuiz, onCreateQuiz }: DashboardProps) => {
                             </div>
                             <div className="flex-1">
                               <h3 className="font-semibold text-foreground">{subject.name}</h3>
-                              <p className="text-sm text-muted-foreground">{subject.quizzes} quizzes available</p>
                             </div>
                             <PlayCircle className="h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
