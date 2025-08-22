@@ -125,6 +125,7 @@ const Index = () => {
       <QuizGenerator 
         onQuizGenerated={handleQuizGenerated}
         onBack={handleBackToDashboard}
+        user={user}
       />
     );
   }

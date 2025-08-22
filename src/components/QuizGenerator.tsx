@@ -21,9 +21,12 @@ import {
 interface QuizGeneratorProps {
   onQuizGenerated: (questions: any[]) => void;
   onBack: () => void;
+  user?: {
+    userType: 'student' | 'faculty';
+  };
 }
 
-const QuizGenerator = ({ onQuizGenerated, onBack }: QuizGeneratorProps) => {
+const QuizGenerator = ({ onQuizGenerated, onBack, user }: QuizGeneratorProps) => {
   const [activeTab, setActiveTab] = useState("upload");
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -245,10 +248,12 @@ const QuizGenerator = ({ onQuizGenerated, onBack }: QuizGeneratorProps) => {
           </Card>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className={`grid w-full ${user?.userType === 'faculty' ? 'grid-cols-3' : 'grid-cols-2'}`}>
               <TabsTrigger value="upload">PDF Upload</TabsTrigger>
               <TabsTrigger value="text">Text Input</TabsTrigger>
-              <TabsTrigger value="manual">Manual Creation</TabsTrigger>
+              {user?.userType === 'faculty' && (
+                <TabsTrigger value="manual">Manual Creation</TabsTrigger>
+              )}
             </TabsList>
 
             <TabsContent value="upload" className="space-y-6">
@@ -376,17 +381,18 @@ const QuizGenerator = ({ onQuizGenerated, onBack }: QuizGeneratorProps) => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="manual" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BookOpen className="h-5 w-5" />
-                    Manual Quiz Creation
-                  </CardTitle>
-                  <CardDescription>
-                    Create quiz questions manually with custom options and explanations
-                  </CardDescription>
-                </CardHeader>
+            {user?.userType === 'faculty' && (
+              <TabsContent value="manual" className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="h-5 w-5" />
+                      Manual Quiz Creation
+                    </CardTitle>
+                    <CardDescription>
+                      Create quiz questions manually with custom options and explanations
+                    </CardDescription>
+                  </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     {customQuestions.map((question, index) => (
@@ -469,8 +475,9 @@ const QuizGenerator = ({ onQuizGenerated, onBack }: QuizGeneratorProps) => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            </TabsContent>
+                </Card>
+              </TabsContent>
+            )}
           </Tabs>
         </div>
       </div>
